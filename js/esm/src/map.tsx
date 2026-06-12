@@ -54,6 +54,7 @@ const Map = ({ courseid, editing, options }: MapProps) => {
 
     const initialFullWidth = parseInt(o.map_fullwidth as any || '0', 10) === 1;
     const [isFullWidth, setIsFullWidth] = useState(initialFullWidth);
+    const [collapsedSections, setCollapsedSections] = useState<number[]>([]);
 
     const handleToggleWidth = async () => {
         const newState = !isFullWidth;
@@ -109,8 +110,17 @@ const Map = ({ courseid, editing, options }: MapProps) => {
     }, [courseid]);
 
     const handleNodeClick = (node: MapNode) => {
-        if (!editing && node.status !== 'locked' && node.url) {
-            window.location.href = node.url;
+        if (!editing && node.status !== 'locked') {
+            if (node.cmid === 0) {
+                // Toggle chapter collapse state
+                setCollapsedSections(prev => 
+                    prev.includes(node.sectionid) 
+                        ? prev.filter(id => id !== node.sectionid) 
+                        : [...prev, node.sectionid]
+                );
+            } else if (node.url) {
+                window.location.href = node.url;
+            }
         }
     };
 
@@ -140,6 +150,11 @@ const Map = ({ courseid, editing, options }: MapProps) => {
             const hasActivities = nodes.some(child => child.sectionid === n.sectionid && child.cmid !== 0 && (editing || child.available || child.status !== 'locked'));
             if (!hasActivities) return false;
         }
+
+        // Hide activities if their parent section is collapsed
+        if (!editing && n.cmid !== 0 && collapsedSections.includes(n.sectionid)) {
+            return false;
+        }
         
         return true;
     });
@@ -160,6 +175,16 @@ const Map = ({ courseid, editing, options }: MapProps) => {
         transition: 'max-width 0.5s cubic-bezier(0.4, 0, 0.2, 1), border-radius 0.5s ease', 
         position: 'relative',
         boxSizing: 'border-box'
+    };
+
+    /**
+     * Handle keyboard navigation for accessibility.
+     */
+    const handleKeyDown = (e: React.KeyboardEvent, node: MapNode) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleNodeClick(node);
+        }
     };
 
     return (
@@ -223,6 +248,7 @@ const Map = ({ courseid, editing, options }: MapProps) => {
                     const isCurrent = node.status === 'current';
                     const isLocked = node.status === 'locked';
                     const isSection = node.cmid === 0;
+                    const isCollapsed = isSection && collapsedSections.includes(node.sectionid);
 
                     let nodeColor = '#94a3b8'; // Locked gray
                     let icon = '🔒';
@@ -233,11 +259,14 @@ const Map = ({ courseid, editing, options }: MapProps) => {
                         icon = '•'; // Simple dot icon instead of emoji
                     } else if (isCompleted) {
                         nodeColor = '#10b981'; // Success Green
-                        icon = '✓';
+                        icon = isSection ? (isCollapsed ? '➕' : '✓') : '✓';
                     } else if (isCurrent) {
                         nodeColor = '#3b82f6'; // Primary Blue
-                        icon = '⭐';
+                        icon = isSection ? (isCollapsed ? '➕' : '⭐') : '⭐';
                         pulseAnim = 'pulse-animation 2s infinite';
+                    } else if (isSection && !isLocked) {
+                        // Section that is unlocked but not current/completed
+                        icon = isCollapsed ? '➕' : '➖';
                     }
 
                     return (

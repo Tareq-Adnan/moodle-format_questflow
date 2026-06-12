@@ -188,13 +188,18 @@ const Map = ({ courseid, editing, options }: MapProps) => {
             </div>
 
             <div style={{ position: 'relative', padding: '20px 0' }}>
-                {/* The vertical timeline line */}
-                <div style={{ position: 'absolute', left: '50px', top: '0', bottom: '0', width: '6px', background: '#cbd5e1', borderRadius: '3px', transform: 'translateX(-50%)', zIndex: 1 }}></div>
+                {/* The curved road timeline */}
+                <div style={{ 
+                    position: 'absolute', left: '0', top: '0', bottom: '0', width: '100px', 
+                    backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='200' viewBox='0 0 100 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M 50 0 C 100 60, 0 140, 50 200' fill='none' stroke='%23cbd5e1' stroke-width='16' stroke-linecap='round'/%3E%3Cpath d='M 50 0 C 100 60, 0 140, 50 200' fill='none' stroke='%23f8fafc' stroke-width='4' stroke-dasharray='8 12' stroke-linecap='round'/%3E%3C/svg%3E")`, 
+                    backgroundRepeat: 'repeat-y', 
+                    zIndex: 1 
+                }}></div>
 
                 {/* Course Start Line / Milestone */}
                 <div style={{ display: 'flex', alignItems: 'center', marginBottom: '60px', position: 'relative', zIndex: 2 }}>
                     <div style={{ 
-                        width: '80px', height: '80px', borderRadius: '50%', 
+                        width: '80px', height: '80px', minWidth: '80px', flexShrink: 0, borderRadius: '50%', 
                         background: 'linear-gradient(135deg, #3b82f6, #0ea5e9)', 
                         display: 'flex', justifyContent: 'center', alignItems: 'center',
                         marginLeft: '10px', border: '6px solid white', 
@@ -317,7 +322,7 @@ const Map = ({ courseid, editing, options }: MapProps) => {
                 {/* Course Finish Line / Milestone */}
                 <div style={{ display: 'flex', alignItems: 'center', marginTop: '60px', position: 'relative', zIndex: 2 }}>
                     <div style={{ 
-                        width: '80px', height: '80px', borderRadius: '50%', 
+                        width: '80px', height: '80px', minWidth: '80px', flexShrink: 0, borderRadius: '50%', 
                         background: courseCompleted ? 'linear-gradient(135deg, #fbbf24, #f59e0b)' : '#cbd5e1', 
                         display: 'flex', justifyContent: 'center', alignItems: 'center',
                         marginLeft: '10px', border: '6px solid white', 

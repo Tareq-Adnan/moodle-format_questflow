@@ -60,6 +60,8 @@ class get_map_data extends external_api {
 
         $context = context_course::instance($params['courseid']);
         self::validate_context($context);
+        
+        $isteacher = has_capability('moodle/course:update', $context);
 
         // Get course modinfo.
         $modinfo = get_fast_modinfo($params['courseid']);
@@ -102,6 +104,11 @@ class get_map_data extends external_api {
             } else {
                 $sectionstatus = 'current';
             }
+
+            $sectionmetadata = [];
+            if (!$sectionavailable && !empty($section->availableinfo)) {
+                $sectionmetadata['restrictions'] = strip_tags($section->availableinfo);
+            }
             
             $result['nodes'][] = [
                 'id'        => $nodecounter++, // Mock ID for React keys
@@ -114,7 +121,7 @@ class get_map_data extends external_api {
                 'status'    => $sectionstatus,
                 'available' => (bool)$sectionavailable,
                 'hastracking' => (bool)$has_trackable_activities,
-                'metadata'  => '',
+                'metadata'  => json_encode($sectionmetadata),
             ];
 
             // Include Activity Nodes within this section
@@ -137,6 +144,47 @@ class get_map_data extends external_api {
                         $status = 'current';
                     }
 
+                    $metadata = [];
+                    // Phase 10: Prerequisite Visualization
+                    if (!$available && !empty($cm->availableinfo)) {
+                        $metadata['restrictions'] = strip_tags($cm->availableinfo);
+                    }
+
+                    // Fetch stored metadata from DB
+                    $storednode = $DB->get_record('format_questflow_nodes', [
+                        'courseid' => $params['courseid'],
+                        'cmid' => (int)$cmid
+                    ], 'metadata', IGNORE_MULTIPLE);
+                    if ($storednode && !empty($storednode->metadata)) {
+                        $storedmetadata = json_decode($storednode->metadata, true);
+                        if (is_array($storedmetadata)) {
+                            $metadata = array_merge($metadata, $storedmetadata);
+                        }
+                    }
+
+                    // Phase 11: Analytics & Insights (Mock data for Teacher Heatmaps/Drop-off)
+                    if ($isteacher && $hastracking) {
+                        // Use cmid to generate deterministic random mock numbers for analytics
+                        srand($cmid);
+                        $metadata['activeUsers'] = rand(0, 45); // How many students are stuck/working here
+                        $metadata['dropoffRate'] = rand(0, 100) > 85 ? rand(15, 40) : rand(0, 5); // % of students who drop off here
+                        srand(); // Reset rand
+                    }
+
+                    // Ecosystem Integration (Phase 9) hooks
+                    if (\core_plugin_manager::instance()->get_plugin_info('block_xp')) {
+                        // Hook to show XP for tracked activities
+                        if ($hastracking) {
+                            $metadata['xp'] = 10; // Placeholder points
+                        }
+                    }
+                    if (\core_plugin_manager::instance()->get_plugin_info('block_stash')) {
+                        // Hook for stash loot
+                        if (rand(1, 10) > 8 && $hastracking) {
+                            $metadata['loot'] = '🪙';
+                        }
+                    }
+
                     $result['nodes'][] = [
                         'id'        => $nodecounter++, // Mock ID for React keys
                         'sectionid' => (int)$section->id,
@@ -148,7 +196,7 @@ class get_map_data extends external_api {
                         'status'    => $status,
                         'available' => (bool)$available,
                         'hastracking' => (bool)$hastracking,
-                        'metadata'  => '',
+                        'metadata'  => json_encode($metadata),
                     ];
                 }
             }

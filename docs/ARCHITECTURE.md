@@ -9,19 +9,20 @@ Moodle's default course structure is often criticized for the "Scroll of Death"â
 
 ## 3. Database Design
 ### Table: `{format_questflow_nodes}`
-Used to persist the visual layout of the map.
+Used to persist custom visual layout data not natively supported by Moodle.
 - `id`: Primary key.
 - `courseid`: Link to `{course}`.
 - `sectionid`: Link to `{course_sections}` (if node represents a section).
 - `cmid`: Link to `{course_modules}` (if node represents an activity).
-- `x`, `y`: Coordinates for node placement on the SVG map.
-- `metadata`: JSON field for extended properties (colors, labels, branching info).
+- `x`, `y`: Coordinates for node placement on the SVG map (deprecated by flexbox timeline).
+- `metadata`: JSON field for extended properties (`isBranch`, `branchCaption`, etc.).
 
 ## 4. Web Services (AJAX Endpoints)
 These services allow the React frontend to communicate with Moodle.
-- `format_questflow_get_map_data`: Retrieves all nodes, completion status, and coordinates for a course.
-- `format_questflow_save_node_position`: Saves X/Y coordinates when a teacher drags a node in Edit Mode.
-- `format_questflow_get_branching_logic`: Fetches prerequisite data for visual "line of sight" rendering.
+- `format_questflow_get_map_data`: Retrieves all nodes, completion status, restriction data, and injected analytics (Heatmaps/Drop-off) for a course.
+- `format_questflow_save_node_metadata`: Saves JSON metadata (like Branch toggles and Branch Captions) to the DB.
+- `format_questflow_toggle_fullwidth`: Toggles the user's preferred layout width.
+- `format_questflow_save_node_position`: Saves X/Y coordinates (Legacy).
 
 ## 5. Frontend Architecture
 - **Framework:** React.

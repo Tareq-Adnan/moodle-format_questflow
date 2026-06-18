@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2026061001;        // The current plugin version (Date: YYYYMMDDXX).
+$plugin->version   = 2026061003;        // The current plugin version (Date: YYYYMMDDXX).
 $plugin->requires  = 2026041000;        // Requires this Moodle version.
 $plugin->component = 'format_questflow'; // Full name of the plugin (used for diagnostics).
 $plugin->maturity  = MATURITY_ALPHA;

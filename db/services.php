@@ -39,6 +39,13 @@ $functions = [
         'type'        => 'write',
         'ajax'        => true,
     ],
+    'format_questflow_save_node_metadata' => [
+        'classname'   => 'format_questflow\external\save_node_metadata',
+        'methodname'  => 'execute',
+        'description' => 'Saves metadata (like branching status) for a map node.',
+        'type'        => 'write',
+        'ajax'        => true,
+    ],
     'format_questflow_toggle_fullwidth' => [
         'classname'   => 'format_questflow\external\toggle_fullwidth',
         'methodname'  => 'execute',

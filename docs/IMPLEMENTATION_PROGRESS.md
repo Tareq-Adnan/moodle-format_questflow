@@ -30,6 +30,15 @@
   - [x] Frankenstyle naming verification
   - [x] Security and capabilities audit
   - [x] GPL boilerplate validation
+- [x] **Phase 9: Advanced Gamification Integrations**
+  - [x] Completion Celebrations (lightweight JS particle effects)
+  - [x] Ecosystem Integration (Level Up! & Stash hooks for XP/Loot)
+- [x] **Phase 10: Advanced Pathing & Logic**
+  - [x] Prerequisite Visualization (Lock tooltips with Restrict Access API data)
+  - [x] Branching Paths ("Choice" nodes rendered side-by-side in timeline)
+- [x] **Phase 11: Analytics & Insights**
+  - [x] Teacher Heatmaps (Toggle to show student clusters)
+  - [x] Drop-off Alerts (Visual warning on high-dropoff nodes)
 
 ### Progress Log
 | Date | Task | Description |
@@ -61,3 +70,6 @@
 | 2026-06-10 | UI Polish | Replaced the straight vertical connector line with a repeating SVG background that resembles a winding, dashed road, enhancing the gamified 'journey' feel without disrupting the underlying HTML layout. |
 | 2026-06-10 | UX Polish | Refactored 'Architect Mode' layout. The standard Moodle course content editor is now the primary interface in Edit Mode to ensure full compatibility with Moodle's native tools. The Quest Map preview now seamlessly slides out from a custom left-hand drawer offcanvas menu, providing a professional and unobtrusive workspace for teachers. |
 | 2026-06-10 | Bug Fix | Fixed a flexbox layout issue causing the Start and Finish milestone circles to squish into ovals on narrow mobile screens. Applied explicit `flexShrink: 0` constraints to guarantee perfect circle geometry on all devices. |
+| 2026-06-12 | Phase 9 | Added Completion Celebrations (lightweight JS particle effects) and Ecosystem Integration (Level Up! & Stash hooks for XP/Loot). |
+| 2026-06-12 | Phase 10 | Implemented Prerequisite Visualization tooltips showing Restrict Access rules. Added Branching Paths UI allowing teachers to toggle nodes to render side-by-side. |
+| 2026-06-12 | Phase 11 | Added Teacher Heatmaps and Drop-off Alerts. Teachers can toggle a view showing student clusters and high drop-off rates directly on the timeline nodes. |

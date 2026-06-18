@@ -93,7 +93,7 @@ class save_node_position extends external_api {
                 'courseid' => $params['courseid'],
                 'sectionid' => $params['sectionid'],
                 'cmid' => $params['cmid']
-            ]);
+            ], '*', IGNORE_MULTIPLE);
             if ($existing) {
                 $record->id = $existing->id;
                 $DB->update_record('format_questflow_nodes', $record);
